@@ -62,13 +62,70 @@
       background: black;
       position: absolute;
       top: 50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+      transition: all 0.5s;
     }
 
   </style>
 
   <script>
+    const initialRotation = 90;
+    const rotationPerTick = 360 / 60;
+    const rotationPerTickHours = 360 / 24;
 
+    const secondsHandElement = document.querySelector('.second-hand');
+    const minutesHandElement = document.querySelector('.min-hand');
+    const hoursHandElement = document.querySelector('.hour-hand');
 
+    const HAND_TRANSITION = 'all 0.5s';
+    const NO_TRANSITION = 'none 0s ease 0s';
+
+    const restoreTransitions = () => {
+        if (secondsHandElement.style.transition === NO_TRANSITION) {
+          secondsHandElement.style.transition = HAND_TRANSITION;
+        }
+
+        if (minutesHandElement.style.transition === NO_TRANSITION) {
+          minutesHandElement.style.transition = HAND_TRANSITION;
+        }
+
+        if (hoursHandElement.style.transition === NO_TRANSITION) {
+          hoursHandElement.style.transition = HAND_TRANSITION;
+        }
+    };
+
+    const updateClock = () => {
+      restoreTransitions();
+
+      const currentDate = new Date();
+
+      const seconds = currentDate.getSeconds();
+      if (seconds === 60) {
+        secondsHandElement.style.transition = NO_TRANSITION;
+      }
+  
+      const minutes = currentDate.getMinutes();
+      if (minutes === 60) {
+        minutesHandElement.style.transition = NO_TRANSITION;
+      }
+
+      const hours = currentDate.getHours();
+      if (hours === 24) {
+        hoursHandElement.style.transition = NO_TRANSITION;
+      }
+
+      const secondsRotation = initialRotation + rotationPerTick * seconds;
+      const minutesRotation = initialRotation + rotationPerTick * minutes;
+      const hoursRotation = initialRotation + rotationPerTickHours * hours;
+
+      secondsHandElement.style.transform = `rotate(${ secondsRotation }deg)`;
+      minutesHandElement.style.transform = `rotate(${ minutesRotation }deg)`;
+      hoursHandElement.style.transform = `rotate(${ hoursRotation }deg)`;
+    };
+
+    setInterval(updateClock, 1000);
+    updateClock();
   </script>
 </body>
 </html>
